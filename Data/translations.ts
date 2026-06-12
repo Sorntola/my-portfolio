@@ -83,7 +83,7 @@ export const translations = {
     footerCopyright:
     "© 2026 Tola Portfolio. All Rights Reserved.",
     footerBuilt:
-    "Built with Next.js & Tailwind CSS",
+    "Develop by SORN TOLA",
 
     aboutYearsNumber: "2+",
     aboutYearsLabel: "Years Experience",
@@ -205,7 +205,7 @@ export const translations = {
     footerCopyright:
     "© ២០២៦ កម្មសិទ្ធិផ្ទាល់ខ្លួនរបស់ តុលា។ រក្សាសិទ្ធិគ្រប់យ៉ាង។",
       footerBuilt:
-    "បង្កើតឡើងដោយ Next.js និង Tailwind CSS",
+    "បង្កើតឡើងដោយ SORN TOLA",
 
     aboutYearsNumber: "២+",
     aboutYearsLabel: "ឆ្នាំបទពិសោធន៍",
