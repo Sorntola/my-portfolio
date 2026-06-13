@@ -19,7 +19,7 @@ type BinaryStream = {
   opacity: number;
 };
 
-const WORDS = ["AI", "DEV", "API", "NEXT", "SQL", "NODE", "JSON", "ROOT","Media","Graphic Design"];
+const WORDS = ["AI", "DEV", "API", "NEXT", "SQL", "NODE", "JSON", "ROOT","Media","Graphic Design"ុ,"Photography","Videography"];
 
 export default function BinaryBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
