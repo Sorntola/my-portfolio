@@ -17,7 +17,6 @@ type BinaryStream = {
   fontSize: number;
   length: number;
   opacity: number;
-  layer: number;
 };
 
 const WORDS = ["AI", "DEV", "API", "NEXT", "SQL", "NODE", "JSON", "ROOT"];
@@ -44,23 +43,30 @@ export default function BinaryBackground() {
 
     resizeCanvas();
 
-    const particles: Particle[] = Array.from({ length: 80 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      speedX: (Math.random() - 0.5) * 0.45,
-      speedY: (Math.random() - 0.5) * 0.45,
-      radius: Math.random() * 2 + 1,
-    }));
+    const isMobile = window.innerWidth < 768;
 
-    const streams: BinaryStream[] = Array.from({ length: 38 }, (_, i) => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      speed: 0.35 + Math.random() * 1.2,
-      fontSize: 10 + Math.random() * 7,
-      length: 8 + Math.floor(Math.random() * 14),
-      opacity: 0.12 + Math.random() * 0.28,
-      layer: i % 3,
-    }));
+    const particles: Particle[] = Array.from(
+      { length: isMobile ? 45 : 80 },
+      () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        speedX: (Math.random() - 0.5) * 0.45,
+        speedY: (Math.random() - 0.5) * 0.45,
+        radius: Math.random() * 2 + 1,
+      })
+    );
+
+    const streams: BinaryStream[] = Array.from(
+      { length: isMobile ? 22 : 38 },
+      () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        speed: 0.35 + Math.random() * 1.2,
+        fontSize: isMobile ? 10 + Math.random() * 4 : 10 + Math.random() * 7,
+        length: 8 + Math.floor(Math.random() * 14),
+        opacity: isMobile ? 0.08 + Math.random() * 0.18 : 0.12 + Math.random() * 0.28,
+      })
+    );
 
     const drawBackgroundGlow = () => {
       const gradient = ctx.createRadialGradient(
@@ -72,9 +78,9 @@ export default function BinaryBackground() {
         canvas.width
       );
 
-      gradient.addColorStop(0, "rgba(34, 211, 238, 0.10)");
-      gradient.addColorStop(0.45, "rgba(15, 23, 42, 0.10)");
-      gradient.addColorStop(1, "rgba(2, 6, 23, 0.65)");
+      gradient.addColorStop(0, "rgba(34, 211, 238, 0.08)");
+      gradient.addColorStop(0.45, "rgba(15, 23, 42, 0.08)");
+      gradient.addColorStop(1, "rgba(2, 6, 23, 0.45)");
 
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -82,7 +88,7 @@ export default function BinaryBackground() {
 
     const drawScanLines = () => {
       ctx.save();
-      ctx.strokeStyle = "rgba(34, 211, 238, 0.035)";
+      ctx.strokeStyle = "rgba(34, 211, 238, 0.028)";
       ctx.lineWidth = 1;
 
       for (let y = (frame * 0.35) % 42; y < canvas.height; y += 42) {
@@ -112,8 +118,8 @@ export default function BinaryBackground() {
         ctx.save();
         ctx.font = `800 ${stream.fontSize}px monospace`;
         ctx.textAlign = "center";
-        ctx.shadowColor = "rgba(34, 211, 238, 0.8)";
-        ctx.shadowBlur = nearMouse ? 14 : 7;
+        ctx.shadowColor = "rgba(34, 211, 238, 0.65)";
+        ctx.shadowBlur = nearMouse ? 12 : 6;
 
         for (let i = 0; i < stream.length; i++) {
           const y = stream.y + i * (stream.fontSize + 5);
@@ -122,13 +128,13 @@ export default function BinaryBackground() {
 
           const alpha =
             i === 0
-              ? stream.opacity + 0.35
-              : stream.opacity * fade * (nearMouse ? 1.8 : 1);
+              ? stream.opacity + 0.25
+              : stream.opacity * fade * (nearMouse ? 1.5 : 1);
 
           ctx.fillStyle =
             i === 0
-              ? `rgba(165, 243, 252, ${Math.min(alpha, 0.85)})`
-              : `rgba(34, 211, 238, ${Math.min(alpha, 0.5)})`;
+              ? `rgba(165, 243, 252, ${Math.min(alpha, 0.7)})`
+              : `rgba(34, 211, 238, ${Math.min(alpha, 0.42)})`;
 
           ctx.fillText(digit, stream.x, y);
         }
@@ -147,9 +153,9 @@ export default function BinaryBackground() {
 
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(34, 211, 238, 0.55)";
-        ctx.shadowColor = "rgba(34, 211, 238, 0.8)";
-        ctx.shadowBlur = 8;
+        ctx.fillStyle = "rgba(34, 211, 238, 0.45)";
+        ctx.shadowColor = "rgba(34, 211, 238, 0.65)";
+        ctx.shadowBlur = 7;
         ctx.fill();
         ctx.shadowBlur = 0;
 
@@ -161,7 +167,7 @@ export default function BinaryBackground() {
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(other.x, other.y);
-            ctx.strokeStyle = `rgba(34, 211, 238, ${(1 - distance / 120) * 0.16})`;
+            ctx.strokeStyle = `rgba(34, 211, 238, ${(1 - distance / 120) * 0.13})`;
             ctx.lineWidth = 1;
             ctx.stroke();
           }
@@ -174,7 +180,7 @@ export default function BinaryBackground() {
             ctx.beginPath();
             ctx.moveTo(particle.x, particle.y);
             ctx.lineTo(mouseX, mouseY);
-            ctx.strokeStyle = `rgba(34, 211, 238, ${(1 - distance / 170) * 0.38})`;
+            ctx.strokeStyle = `rgba(34, 211, 238, ${(1 - distance / 170) * 0.3})`;
             ctx.lineWidth = 1.2;
             ctx.stroke();
           }
@@ -188,12 +194,12 @@ export default function BinaryBackground() {
       ctx.textAlign = "center";
 
       WORDS.forEach((word, i) => {
-        const x = ((i * 173 + frame * 0.15) % canvas.width);
-        const y = 90 + ((i * 97) % (canvas.height - 180));
+        const x = (i * 173 + frame * 0.15) % canvas.width;
+        const y = 90 + ((i * 97) % Math.max(canvas.height - 180, 200));
 
-        ctx.fillStyle = "rgba(125, 211, 252, 0.12)";
-        ctx.shadowColor = "rgba(34, 211, 238, 0.35)";
-        ctx.shadowBlur = 6;
+        ctx.fillStyle = "rgba(125, 211, 252, 0.1)";
+        ctx.shadowColor = "rgba(34, 211, 238, 0.28)";
+        ctx.shadowBlur = 5;
         ctx.fillText(word, x, y);
       });
 
@@ -239,16 +245,16 @@ export default function BinaryBackground() {
 
   return (
     <>
-      <div className="fixed inset-0 z-0 bg-[linear-gradient(rgba(3,7,18,0.72),rgba(3,7,18,0.94)),url('/background.jpg')] bg-cover bg-center bg-fixed" />
+      <div className="fixed inset-0 z-0 bg-[linear-gradient(rgba(3,7,18,0.48),rgba(3,7,18,0.82)),url('/background.jpg')] bg-cover bg-center md:bg-fixed md:bg-[linear-gradient(rgba(3,7,18,0.72),rgba(3,7,18,0.94)),url('/background.jpg')]" />
 
-      <div className="fixed inset-0 z-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.18),transparent_28%),radial-gradient(circle_at_80%_35%,rgba(37,99,235,0.16),transparent_32%),radial-gradient(circle_at_50%_90%,rgba(14,165,233,0.12),transparent_36%)]" />
+      <div className="fixed inset-0 z-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.12),transparent_30%),radial-gradient(circle_at_80%_35%,rgba(37,99,235,0.12),transparent_34%),radial-gradient(circle_at_50%_90%,rgba(14,165,233,0.08),transparent_38%)] md:bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.18),transparent_28%),radial-gradient(circle_at_80%_35%,rgba(37,99,235,0.16),transparent_32%),radial-gradient(circle_at_50%_90%,rgba(14,165,233,0.12),transparent_36%)]" />
 
       <canvas
         ref={canvasRef}
-        className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-90"
+        className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-55 md:opacity-90"
       />
 
-      <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-b from-slate-950/5 via-slate-950/35 to-slate-950" />
+      <div className="pointer-events-none fixed inset-0 z-0 bg-gradient-to-b from-slate-950/0 via-slate-950/20 to-slate-950/90 md:from-slate-950/5 md:via-slate-950/35 md:to-slate-950" />
     </>
   );
 }
