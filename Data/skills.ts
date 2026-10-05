@@ -7,4 +7,5 @@ export const skills = [
   "SQL Server",
   "Photoshop",
   "Figma",
+  "Illustrator",
 ];
