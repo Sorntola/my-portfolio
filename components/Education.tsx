@@ -6,13 +6,13 @@ export default function Education() {
   const { t, language } = useLanguage();
 
   return (
-    <section id="education" className="fade-up mx-auto max-w-6xl px-6 py-20">
-      <div className="mb-10 text-center">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-cyan-400">
+    <section id="education" className="credential-section education-section reveal">
+      <div className="education-heading">
+        <p className="eyebrow">
           {t("educationTitle")}
         </p>
 
-        <h2 className="text-3xl font-bold md:text-4xl">
+        <h2 className="credential-title">
           {t("educationTitle")}
         </h2>
 
@@ -21,10 +21,10 @@ export default function Education() {
         </p>
       </div>
 
-      <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur">
+      <div className="education-detail">
         <p className="mb-2 text-sm text-cyan-400">{t("educationPeriod")}</p>
 
-        <h3 className={`text-2xl font-bold ${language === "kh" ? "leading-10" : ""}`}>
+        <h3 className={`text-xl font-semibold ${language === "kh" ? "leading-10" : ""}`}>
           {t("educationDegree")}
         </h3>
 

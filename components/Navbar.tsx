@@ -1,149 +1,63 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight, ChevronDown, CodeXml, Menu, X } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import LanguageSwitcher from "./LanguageSwitcher";
 
-const mainMenuItems = [
-  { label: "navHome", href: "#home", id: "home" },
-  { label: "navAbout", href: "#about", id: "about" },
-  { label: "navExperience", href: "#experience", id: "experience" },
-  { label: "navProjects", href: "#projects", id: "projects" },
-  { label: "navContact", href: "#contact", id: "contact" },
+const primary = [
+  { id: "home", label: "navHome" }, { id: "about", label: "navAbout" },
+  { id: "skills", label: "navSkills" }, { id: "projects", label: "navProjects" },
+  { id: "contact", label: "navContact" },
 ] as const;
-
-const moreMenuItems = [
-  { label: "navEducation", href: "#education", id: "education" },
-  { label: "navCertificates", href: "#certificates", id: "certificates" },
-  { label: "navSkills", href: "#skills", id: "skills" },
-  { label: "navGallery", href: "#gallery", id: "gallery" },
+const more = [
+  { id: "experience", label: "navExperience" }, { id: "education", label: "navEducation" },
+  { id: "certificates", label: "navCertificates" }, { id: "gallery", label: "navGallery" },
 ] as const;
-
-const allMenuItems = [...mainMenuItems, ...moreMenuItems] as const;
+const all = [...primary, ...more];
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isMoreOpen, setIsMoreOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
   const { t, language } = useLanguage();
-
+  const [open, setOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [active, setActive] = useState("home");
+  const navRef = useRef<HTMLElement>(null);
   useEffect(() => {
-    function handleScroll() {
-      const currentSection = allMenuItems.find((item) => {
-        const section = document.getElementById(item.id);
-        if (!section) return false;
-
-        const rect = section.getBoundingClientRect();
-        return rect.top <= 120 && rect.bottom >= 120;
+    let frame = 0;
+    const sections = all.map((item) => ({ ...item, element: document.getElementById(item.id) }));
+    const update = () => {
+      frame = 0;
+      const match = sections.find(({ element }) => {
+        const rect = element?.getBoundingClientRect();
+        return rect && rect.top <= 160 && rect.bottom > 160;
       });
-
-      if (currentSection) {
-        setActiveSection(currentSection.id);
-      }
-    }
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener("scroll", handleScroll);
+      if (match) setActive(match.id);
+    };
+    const scheduleUpdate = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    const close = (event: PointerEvent) => {
+      if (!navRef.current?.contains(event.target as Node)) { setMoreOpen(false); setOpen(false); }
+    };
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    document.addEventListener("pointerdown", close);
+    update();
+    return () => { cancelAnimationFrame(frame); window.removeEventListener("scroll", scheduleUpdate); document.removeEventListener("pointerdown", close); };
   }, []);
-
-  function isMoreActive() {
-    return moreMenuItems.some((item) => item.id === activeSection);
-  }
-
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/10 bg-slate-950/85 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="#home" className="text-xl font-bold tracking-widest text-white">
-          TOLA
-        </a>
-
-        <div className="hidden items-center gap-5 text-sm text-slate-300 lg:flex">
-          {mainMenuItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className={`transition ${
-                activeSection === item.id
-                  ? "text-cyan-400"
-                  : "hover:text-cyan-400"
-              }`}
-            >
-              {t(item.label)}
-            </a>
-          ))}
-
-          <div className="relative">
-            <button
-              type="button"
-              aria-expanded={isMoreOpen}
-              onClick={() => setIsMoreOpen((prev) => !prev)}
-              className={`rounded-full px-4 py-2 transition ${
-                isMoreActive()
-                  ? "bg-cyan-400 text-slate-950"
-                  : "border border-white/10 text-slate-300 hover:border-cyan-400 hover:text-cyan-400"
-              }`}
-            >
-              {language === "kh" ? "ផ្សេងៗ" : "More"} ▾
-            </button>
-
-            {isMoreOpen && (
-              <div className="absolute right-0 mt-3 w-56 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-2xl">
-                {moreMenuItems.map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsMoreOpen(false)}
-                    className={`block px-5 py-3 transition ${
-                      activeSection === item.id
-                        ? "bg-cyan-400 text-slate-950"
-                        : "text-slate-300 hover:bg-white/10 hover:text-cyan-400"
-                    }`}
-                  >
-                    {t(item.label)}
-                  </a>
-                ))}
-              </div>
-            )}
+    <nav ref={navRef} className="site-nav" onKeyDown={(event) => { if (event.key === "Escape") { setOpen(false); setMoreOpen(false); } }} aria-label="Main navigation">
+      <div className="site-container nav-inner">
+        <a href="#home" className="brand"><CodeXml aria-hidden="true" /><span>Tola<span className="brand-dot">.</span></span></a>
+        <div className="desktop-links">
+          {primary.map(({ id, label }) => <a key={id} href={`#${id}`} className={active === id ? "nav-active" : ""} aria-current={active === id ? "location" : undefined}>{t(label)}</a>)}
+          <div className="nav-more">
+            <button type="button" aria-expanded={moreOpen} aria-controls="more-navigation" onClick={() => setMoreOpen(!moreOpen)}>{language === "kh" ? t("navExperience") : "More"}<ChevronDown size={12} /></button>
+            {moreOpen && <div className="nav-dropdown" id="more-navigation">{more.map(({ id, label }) => <a key={id} href={`#${id}`} onClick={() => setMoreOpen(false)}>{t(label)}</a>)}</div>}
           </div>
-
-          <LanguageSwitcher />
         </div>
-
-        <button
-          type="button"
-          aria-label={language === "kh" ? "ម៉ឺនុយ" : "Navigation menu"}
-          aria-expanded={isOpen}
-          onClick={() => setIsOpen(!isOpen)}
-          className="rounded-xl border border-white/10 px-3 py-2 text-xl text-white lg:hidden"
-        >
-          ☰
-        </button>
+        <div className="nav-actions"><LanguageSwitcher /><a href="#contact" className="button-primary nav-hire">{t("hireMe")}<ArrowUpRight size={16} /></a><button className="mobile-toggle" aria-label="Navigation menu" aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(!open)}>{open ? <X size={22} /> : <Menu size={22} />}</button></div>
       </div>
-
-      {isOpen && (
-        <div className="animate-slide-down border-t border-white/10 px-6 py-4 lg:hidden">
-          <div className="grid gap-4 text-sm text-slate-300">
-            {allMenuItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsOpen(false)}
-                className={`transition ${
-                  activeSection === item.id
-                    ? "text-cyan-400"
-                    : "hover:text-cyan-400"
-                }`}
-              >
-                {t(item.label)}
-              </a>
-            ))}
-
-            <LanguageSwitcher />
-          </div>
-        </div>
-      )}
+      {open && <div id="mobile-navigation" className="mobile-navigation site-container">{all.map(({ id, label }) => <a key={id} href={`#${id}`} onClick={() => setOpen(false)} className={active === id ? "nav-active" : ""}>{t(label)}</a>)}</div>}
     </nav>
   );
 }

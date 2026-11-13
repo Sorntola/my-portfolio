@@ -1,60 +1,10 @@
-"use client";
-
+﻿"use client";
 import Image from "next/image";
+import { ArrowUpRight, Camera, Palette } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
-
+import SectionHeading from "./SectionHeading";
 export default function Gallery() {
   const { t } = useLanguage();
-
-  const gallery = [
-    {
-      title: t("galleryDesign"),
-      image: "/gallery/design.jpg",
-    },
-    {
-      title: t("galleryPhoto"),
-      image: "/gallery/photographer.JPG",
-    },
-  ];
-
-  return (
-    <section id="gallery" className="fade-up mx-auto max-w-6xl px-6 py-20">
-      <div className="mb-10 text-center">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-cyan-400">
-          {t("galleryTitle")}
-        </p>
-
-        <h2 className="text-3xl font-bold md:text-4xl">
-          {t("galleryTitle")}
-        </h2>
-
-        <p className="mx-auto mt-3 max-w-2xl text-slate-400">
-          {t("gallerySubtitle")}
-        </p>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        {gallery.map((item) => (
-          <div
-            key={item.title}
-            className="group overflow-hidden rounded-3xl border border-white/10 bg-white/5"
-          >
-            <div className="relative h-64 overflow-hidden">
-              <Image
-                src={item.image}
-                alt={item.title}
-                fill
-                sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-cover transition duration-500 group-hover:scale-110"
-              />
-            </div>
-
-            <div className="p-5">
-              <h3 className="text-xl font-bold">{item.title}</h3>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
+  const items = [{ title: t("galleryDesign"), image: "/gallery/design.jpg", icon: Palette }, { title: t("galleryPhoto"), image: "/gallery/photographer.JPG", icon: Camera }];
+  return <section id="gallery" className="site-container section-space"><SectionHeading eyebrow={t("galleryTitle")} title={t("galleryHeadline")} /><div className="gallery-grid">{items.map(({ title, image, icon: Icon }, i) => <a key={title} href={image} target="_blank" rel="noopener noreferrer" className="gallery-card reveal" aria-label={title}><Image src={image} alt={title} fill sizes="(min-width: 768px) 550px, 100vw" className="object-cover" /><span className="gallery-index">0{i + 1}</span><div className="gallery-caption"><div><span className="eyebrow"><Icon size={14} />{t("galleryTitle")}</span><h3>{title}</h3></div><span className="gallery-arrow"><ArrowUpRight size={22} /></span></div></a>)}</div></section>;
 }

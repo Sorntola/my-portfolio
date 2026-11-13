@@ -1,63 +1,20 @@
-"use client";
-
+﻿"use client";
+import { FaReact, FaNodeJs } from "react-icons/fa";
+import { SiNextdotjs, SiTailwindcss, SiFigma, SiDotnet } from "react-icons/si";
+import { Database, Image } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
-
-type Skill = {
-  name: string;
-  level: number;
-};
-
-const skills: Skill[] = [
-  { name: "React", level: 75 },
-  { name: "Next.js", level: 70 },
-  { name: "Tailwind CSS", level: 85 },
-  { name: "Node.js", level: 65 },
-  { name: "C#", level: 90 },
-  { name: "SQL Server", level: 85 },
-  { name: "Photoshop", level: 95 },
-  { name: "Figma", level: 80 },
+import SectionHeading from "./SectionHeading";
+const skills = [
+  { name: "React", level: 10, icon: FaReact }, { name: "Next.js", level: 10, icon: SiNextdotjs },
+  { name: "Tailwind CSS", level: 40, icon: SiTailwindcss }, { name: "Node.js", level: 10, icon: FaNodeJs },
+  { name: "C# / .NET", level: 90, icon: SiDotnet }, { name: "SQL Server", level: 85, icon: Database },
+  { name: "Photoshop", level: 95, icon: Image }, { name: "Figma", level: 90, icon: SiFigma },
 ];
-
 export default function Skills() {
-  const { t, language } = useLanguage();
-
-  return (
-    <section id="skills" className="mx-auto max-w-6xl px-6 py-20">
-      <h2 className="mb-2 text-center text-3xl font-bold">
-        {t("skillsTitle")}
-      </h2>
-
-      <p
-        className={`mb-10 text-center text-slate-400 ${
-          language === "kh" ? "leading-8" : ""
-        }`}
-      >
-        {t("skillsSubtitle")}
-      </p>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        {skills.map((skill) => (
-          <div
-            key={skill.name}
-            className="rounded-2xl border border-white/10 bg-white/5 p-5 transition hover:border-cyan-400/50 hover:bg-white/10"
-          >
-            <div className="mb-3 flex items-center justify-between">
-              <span className="font-medium">{skill.name}</span>
-
-              <span className="text-cyan-400">{skill.level}%</span>
-            </div>
-
-            <div className="h-3 rounded-full bg-slate-800">
-              <div
-                className="h-3 rounded-full bg-cyan-400"
-                style={{
-                  width: `${skill.level}%`,
-                }}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
+  const { t } = useLanguage();
+  return <section id="skills" className="site-container section-space"><SectionHeading eyebrow={t("skillsTitle")} title={t("skillsHeadline")} />
+    <div className="skills-grid">{skills.map(({ name, level, icon: Icon }, index) => <div key={name} className="skill-item reveal" style={{ transitionDelay: `${index % 3 * 80}ms` }}>
+      <Icon className="skill-icon" aria-hidden="true" /><div className="skill-content"><div className="skill-label"><span>{name}</span><span>{level}%</span></div><div className="skill-track" role="progressbar" aria-label={name} aria-valuenow={level} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${level}%` }} /></div></div>
+    </div>)}</div>
+  </section>;
 }

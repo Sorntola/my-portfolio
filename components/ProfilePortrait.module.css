@@ -1,0 +1,48 @@
+.frame {
+  --reveal-x: 50%;
+  --reveal-y: 40%;
+  --reveal-radius: 0px;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  isolation: isolate;
+  cursor: crosshair;
+}
+.alternate {
+  position: absolute;
+  inset: 0;
+  clip-path: circle(var(--reveal-radius) at var(--reveal-x) var(--reveal-y));
+  transition: clip-path .18s ease-out, opacity .3s ease;
+  opacity: 0;
+}
+.frame[data-ready="true"] .alternate { opacity: 1; }
+.alternatePortrait { object-fit: cover; object-position: 50% 50%; }
+.edge {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle 145px at var(--reveal-x) var(--reveal-y), transparent 92%, #67e8f950 98%, transparent 100%);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.frame[data-revealed="true"] .alternate { clip-path: circle(150% at 50% 50%); transition-duration: .7s; }
+.frame:focus-visible { outline: none; box-shadow: inset 0 0 0 3px #67e8f9; }
+.frame:focus-visible::after { content: ""; position: absolute; inset: 4px; border: 2px solid #67e8f9; border-radius: inherit; pointer-events: none; }
+.hint { position: absolute; z-index: 2; top: 20%; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 7px; width: max-content; max-width: 85%; padding: 7px 11px; border-radius: 20px; border: 1px solid #67e8f92e; background: #020617aa; color: #a5f3fc; font-size: 9px; letter-spacing: .04em; backdrop-filter: blur(8px); transition: opacity .3s; pointer-events: none; }
+.tapHint { display: none; }
+.frame[data-revealed="true"] .hint { opacity: 0; }
+@media (hover: hover) and (pointer: fine) {
+  .frame[data-ready="true"]:hover { --reveal-radius: 145px; }
+  .frame[data-ready="true"]:hover:not([data-revealed="true"]) .edge { opacity: 1; }
+  .frame:hover .hint { opacity: 0; }
+}
+@media (hover: none), (pointer: coarse) {
+  .hoverHint { display: none; }
+  .tapHint { display: inline; }
+  .frame { cursor: pointer; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .alternate, .edge, .hint { transition: none; }
+}

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Kantumruy_Pro } from "next/font/google";
 import { LanguageProvider } from "@/app/context/LanguageContext";
 import LoadingScreen from "@/components/LoadingScreen";
-import BinaryBackground from "@/components/BinaryBackground";
+import TechBackground from "@/components/TechBackground";
 import "./globals.css";
 
 const kantumruy = Kantumruy_Pro({
@@ -26,7 +26,7 @@ export default function RootLayout({
       <body
         className={`${kantumruy.className} min-h-screen overflow-x-hidden bg-slate-950 text-white antialiased`}
       >
-        <BinaryBackground />
+        <TechBackground />
 
         <LanguageProvider>
           <LoadingScreen />

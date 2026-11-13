@@ -46,3 +46,9 @@ Run the Next.js application and the Express API. Set `API_URL` before building t
 Set `HOST=0.0.0.0` if the API needs to accept connections from another container. Configure HTTPS for the public site, `FRONTEND_ORIGIN` for any direct browser API access, and `DATA_DIR` to persistent storage. This file-backed API is intended for one server process; multiple replicas require a shared database. Back up the data directory. Project writes are disabled when `ADMIN_TOKEN` is unset.
 
 The repository currently tracks legacy `server/node_modules` files; ignore rules prevent new dependency directories from being added, but existing tracked files require a separate Git index cleanup.
+
+## Portrait hover reveal
+
+The hero reveals the supplied Spider-Man image (`public/profile-spiderman.png`) in a circular spotlight following the cursor. Click or tap to toggle the full alternate portrait; use Enter/Space to toggle with the keyboard and Escape to restore the original. The square alternate image is center-cropped to the hero frame. Both portraits load ahead of interaction. Reduced-motion preferences disable transition effects.
+
+Smooth page scrolling uses Lenis with native touch scrolling and a reduced-motion fallback.

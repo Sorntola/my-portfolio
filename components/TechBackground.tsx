@@ -1,135 +1,73 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
+import { CodeXml, Database } from "lucide-react";
+import { FaNodeJs, FaReact } from "react-icons/fa";
+import { SiDotnet, SiFigma, SiNextdotjs, SiTailwindcss } from "react-icons/si";
+import BinaryBackground from "./BinaryBackground";
+import styles from "./TechBackground.module.css";
 
-type Particle = {
-  x: number;
-  y: number;
-  speedX: number;
-  speedY: number;
-  radius: number;
+const planets = [
+  { name: "React", icon: FaReact, orbit: 1, duration: 36, phase: -4, color: "#67e8f9" },
+  { name: "Next.js", icon: SiNextdotjs, orbit: 1, duration: 36, phase: -22, color: "#e2e8f0" },
+  { name: "Tailwind CSS", icon: SiTailwindcss, orbit: 2, duration: 54, phase: -12, color: "#22d3ee" },
+  { name: "Node.js", icon: FaNodeJs, orbit: 2, duration: 54, phase: -39, color: "#6ee7b7" },
+  { name: "C# / .NET", icon: SiDotnet, orbit: 3, duration: 76, phase: -8, color: "#7dd3fc" },
+  { name: "SQL Server", icon: Database, orbit: 3, duration: 76, phase: -46, color: "#38bdf8" },
+  { name: "Photoshop", icon: null, orbit: 4, duration: 100, phase: -33, color: "#60a5fa" },
+  { name: "Figma", icon: SiFigma, orbit: 4, duration: 100, phase: -83, color: "#a5f3fc" },
+];
+
+type OrbitStyle = CSSProperties & {
+  "--orbit": number;
+  "--duration": string;
+  "--phase": string;
+  "--planet-color": string;
 };
 
 export default function TechBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const context = canvas.getContext("2d");
-    if (!context) return;
-
-    let animationId = 0;
-    let mouseX: number | null = null;
-    let mouseY: number | null = null;
-
-    const particles: Particle[] = Array.from({ length: 80 }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      speedX: (Math.random() - 0.5) * 0.5,
-      speedY: (Math.random() - 0.5) * 0.5,
-      radius: Math.random() * 2 + 1,
-    }));
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    const updateVisibility = () => {
+      root.current?.classList.toggle(styles.paused, document.hidden);
     };
-
-    const animate = () => {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.forEach((particle, index) => {
-        particle.x += particle.speedX;
-        particle.y += particle.speedY;
-
-        if (particle.x < 0 || particle.x > canvas.width) {
-          particle.speedX *= -1;
-        }
-
-        if (particle.y < 0 || particle.y > canvas.height) {
-          particle.speedY *= -1;
-        }
-
-        context.beginPath();
-        context.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-        context.fillStyle = "rgba(34, 211, 238, 0.6)";
-        context.fill();
-
-        for (let j = index + 1; j < particles.length; j++) {
-          const other = particles[j];
-          const dx = particle.x - other.x;
-          const dy = particle.y - other.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 120) {
-            context.beginPath();
-            context.moveTo(particle.x, particle.y);
-            context.lineTo(other.x, other.y);
-            context.strokeStyle = `rgba(34, 211, 238, ${
-              (1 - distance / 120) * 0.15
-            })`;
-            context.lineWidth = 1;
-            context.stroke();
-          }
-        }
-
-        if (mouseX !== null && mouseY !== null) {
-          const dx = particle.x - mouseX;
-          const dy = particle.y - mouseY;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 160) {
-            context.beginPath();
-            context.moveTo(particle.x, particle.y);
-            context.lineTo(mouseX, mouseY);
-            context.strokeStyle = `rgba(34, 211, 238, ${
-              (1 - distance / 160) * 0.35
-            })`;
-            context.lineWidth = 1.2;
-            context.stroke();
-          }
-        }
-      });
-
-      animationId = requestAnimationFrame(animate);
-    };
-
-    const handleMouseMove = (event: MouseEvent) => {
-      mouseX = event.clientX;
-      mouseY = event.clientY;
-    };
-
-    const handleMouseOut = () => {
-      mouseX = null;
-      mouseY = null;
-    };
-
-    resizeCanvas();
-    animate();
-
-    window.addEventListener("resize", resizeCanvas);
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseout", handleMouseOut);
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", resizeCanvas);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseout", handleMouseOut);
-    };
+    updateVisibility();
+    document.addEventListener("visibilitychange", updateVisibility);
+    return () => document.removeEventListener("visibilitychange", updateVisibility);
   }, []);
 
   return (
     <>
-      <div className="fixed inset-0 -z-20 bg-[linear-gradient(rgba(3,7,18,0.86),rgba(3,7,18,0.95)),url('/background.jpg')] bg-cover bg-center bg-fixed" />
-
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 -z-10 h-full w-full opacity-50"
-      />
+      <BinaryBackground />
+      <div ref={root} className={styles.background} aria-hidden="true">
+        <div className={styles.nebula} />
+        <div className={styles.stars}>
+          {Array.from({ length: 28 }, (_, i) => (
+            <i key={i} style={{ left: `${(i * 37 + 7) % 100}%`, top: `${(i * 53 + 11) % 100}%`, animationDelay: `${-(i % 7)}s`, width: i % 4 === 0 ? 3 : 2, height: i % 4 === 0 ? 3 : 2 }} />
+          ))}
+        </div>
+        <div className={styles.system}>
+          <div className={styles.sun}>
+            <span className={styles.corona} />
+            <span className={styles.sunBody}><CodeXml strokeWidth={1.25} /><span>TOLA</span></span>
+          </div>
+          {[1, 2, 3, 4].map((orbit) => (
+            <div key={orbit} className={styles.track} style={{ "--orbit": orbit } as CSSProperties} />
+          ))}
+          {planets.map(({ name, icon: Icon, orbit, duration, phase, color }) => (
+            <div key={name} className={styles.orbit} style={{ "--orbit": orbit, "--duration": `${duration}s`, "--phase": `${phase}s`, "--planet-color": color } as OrbitStyle}>
+              <div className={styles.planetPosition}>
+                <div className={styles.planet}>
+                  <span className={styles.planetBody}>{Icon ? <Icon /> : <span className={styles.photoshop}>Ps</span>}</span>
+                  <span className={styles.label}>{name}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className={styles.edgeShade} />
+      </div>
     </>
   );
 }

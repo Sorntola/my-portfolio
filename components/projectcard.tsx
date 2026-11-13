@@ -1,42 +1,23 @@
-"use client";
-
+﻿"use client";
 import Image from "next/image";
+import { useRef } from "react";
+import { ArrowUpRight, X } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
 
-type ProjectCardProps = {
-  title: string;
-  description: string;
-  tech: string;
-  image: string;
-};
-
-export default function ProjectCard({
-  title,
-  description,
-  tech,
-  image,
-}: ProjectCardProps) {
-  const { t, language } = useLanguage();
-
-  return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition hover:-translate-y-2 hover:border-cyan-400">
-      <div className="relative h-44 w-full">
-        <Image src={image} alt={title} fill sizes="(min-width: 768px) 33vw, 100vw" className="object-cover" />
-      </div>
-
-      <div className="p-6">
-        <h3 className="mb-3 text-xl font-bold">{title}</h3>
-
-        <p className={`mb-4 text-slate-300 ${language === "kh" ? "leading-8" : ""}`}>
-          {description}
-        </p>
-
-        <p className="mb-5 text-sm text-cyan-400">{tech}</p>
-
-        <a href={image} target="_blank" rel="noopener noreferrer" className="rounded-full border border-white/20 px-5 py-2 text-sm hover:border-cyan-400 hover:text-cyan-400">
-          {t("projectViewDetails")}
-        </a>
-      </div>
-    </div>
-  );
+type Props = { title: string; description: string; tech: string; image: string; index: number };
+export default function ProjectCard({ title, description, tech, image, index }: Props) {
+  const { t } = useLanguage();
+  const dialog = useRef<HTMLDialogElement>(null);
+  return <>
+    <article className="project-card reveal">
+      <button type="button" className="project-image" onClick={() => dialog.current?.showModal()} aria-label={`${t("projectViewDetails")}: ${title}`}>
+        <Image src={image} alt={title} fill sizes="(min-width: 1024px) 350px, (min-width: 640px) 50vw, 100vw" className="object-cover" />
+        <span className="project-number">{String(index + 1).padStart(2, "0")}</span><span className="image-open"><ArrowUpRight size={20} /></span>
+      </button>
+      <div className="project-content"><p className="project-tech">{tech}</p><h3>{title}</h3><p>{description}</p><button type="button" className="text-link" onClick={() => dialog.current?.showModal()}>{t("projectViewDetails")}<ArrowUpRight size={15} /></button></div>
+    </article>
+    <dialog ref={dialog} className="project-dialog" onClick={(event) => { if (event.target === event.currentTarget) dialog.current?.close(); }} aria-label={title}>
+      <div className="dialog-inner"><button type="button" className="dialog-close" aria-label="Close" onClick={() => dialog.current?.close()}><X size={20} /></button><div className="dialog-image"><Image src={image} alt={title} fill sizes="(min-width: 800px) 760px, 90vw" className="object-contain" /></div><div className="dialog-copy"><p className="eyebrow">{tech}</p><h2>{title}</h2><p>{description}</p><a className="button-secondary" href="#contact" onClick={() => dialog.current?.close()}>{t("heroContactMe")}<ArrowUpRight size={16} /></a></div></div>
+    </dialog>
+  </>;
 }

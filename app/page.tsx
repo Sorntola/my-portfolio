@@ -9,21 +9,33 @@ import Footer from "../components/Footer";
 import Education from "../components/Education";
 import Certificates from "../components/Certificates";
 import Gallery from "../components/Gallery";
+import Reveal from "../components/Reveal";
+import SmoothScroll from "../components/SmoothScroll";
+import { existsSync } from "node:fs";
+import path from "node:path";
 
 export default function Home() {
+  const alternatePortrait = existsSync(path.join(process.cwd(), "public", "profile-spiderman.png"))
+    ? "/profile-spiderman.png"
+    : undefined;
   return (
-    <>
+    <Reveal>
+      <SmoothScroll />
       <Navbar />
-      <Hero />
+      <Hero alternatePortrait={alternatePortrait} />
       <About />
-      <Education />
-      <Experience />
-      <Certificates />
-      <Projects />
       <Skills />
+      <Projects />
+      <Experience />
+      <div className="credentials-band">
+        <div className="site-container credentials-grid">
+          <Education />
+          <Certificates />
+        </div>
+      </div>
       <Gallery />
       <Contact />
       <Footer />
-    </>
+    </Reveal>
   );
 }

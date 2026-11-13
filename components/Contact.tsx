@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ArrowUpRight, Send } from "lucide-react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import {
   FaGithub,
@@ -24,7 +25,7 @@ type FormErrors = {
 };
 
 export default function Contact() {
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -106,191 +107,28 @@ export default function Contact() {
   }
 
   return (
-    <section
-      id="contact"
-      className="min-h-screen bg-slate-950 px-6 py-20 text-white"
-    >
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-14 text-center">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-cyan-400">
-            {t("contactSmallTitle")}
-          </p>
-
-          <h2
-            className={`text-4xl font-bold md:text-5xl ${
-              language === "kh" ? "leading-[1.4]" : ""
-            }`}
-          >
-            {t("contactTitle")}
-          </h2>
-
-          <p
-            className={`mx-auto mt-4 max-w-2xl text-slate-400 ${
-              language === "kh" ? "leading-8" : ""
-            }`}
-          >
-            {t("contactSubtitle")}
-          </p>
+    <section id="contact" className="contact-section section-space">
+      <div className="site-container contact-grid">
+        <div className="contact-copy reveal">
+          <p className="eyebrow">{t("contactTitle")}</p>
+          <h2>{t("contactHeadline")}</h2>
+          <p className="body-copy">{t("contactSubtitle")}</p>
+          <a href="mailto:sorntola2017@gmail.com" className="contact-email"><FaEnvelope aria-hidden="true" /><span>sorntola2017@gmail.com</span><ArrowUpRight size={18} /></a>
+          <p className="contact-location"><FaMapMarkerAlt aria-hidden="true" />{t("heroLocation")}, {t("contactCountry")}</p>
+          <div className="contact-socials"><p className="eyebrow">{t("contactFollowMe")}</p><div>
+            {[{ name: "GitHub", url: "https://github.com/Sorntola", icon: FaGithub }, { name: "LinkedIn", url: "https://www.linkedin.com/in/sorntola/", icon: FaLinkedin }, { name: "Facebook", url: "https://www.facebook.com/tola.noex", icon: FaFacebook }, { name: "Telegram", url: "https://t.me/sorntola", icon: FaTelegram }].map(({ name, url, icon: Icon }) => <a key={name} href={url} aria-label={name} target="_blank" rel="noopener noreferrer"><Icon /></a>)}
+          </div></div>
         </div>
-
-        <div className="grid gap-8 lg:grid-cols-2">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur">
-            <h3 className="mb-6 text-2xl font-bold">
-              {t("contactGetInTouch")}
-            </h3>
-
-            <div className="space-y-5">
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-500/20 text-cyan-400">
-                  <FaEnvelope />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-400">
-                    {t("contactEmail")}
-                  </p>
-                  <p className="font-medium">sorntola2017@gmail.com</p>
-                </div>
-              </div>
-
-
-
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-500/20 text-cyan-400">
-                  <FaMapMarkerAlt />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-400">
-                    {t("contactLocation")}
-                  </p>
-                  <p className="font-medium">{t("contactCountry")}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8">
-              <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-400">
-                {t("contactFollowMe")}
-              </p>
-
-              <div className="flex gap-4">
-                <a
-                  aria-label="GitHub" href="https://github.com/Sorntola"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-xl text-white transition hover:bg-cyan-500 hover:text-slate-950"
-                >
-                  <FaGithub />
-                </a>
-
-                <a
-                  aria-label="Facebook" href="https://www.facebook.com/tola.noex"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-xl text-white transition hover:bg-cyan-500 hover:text-slate-950"
-                >
-                  <FaFacebook />
-                </a>
-
-                <a
-                  aria-label="Telegram" href="https://t.me/sorntola"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-xl text-white transition hover:bg-cyan-500 hover:text-slate-950"
-                >
-                  <FaTelegram />
-                </a>
-
-                <a
-                  aria-label="LinkedIn" href="https://www.linkedin.com/in/sorntola/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-xl text-white transition hover:bg-cyan-500 hover:text-slate-950"
-                >
-                  <FaLinkedin />
-                </a>
-              </div>
-            </div>
+        <form onSubmit={handleSubmit} className="contact-form reveal">
+          <div className="form-heading"><span><Send size={20} /></span><div><h3>{t("contactGetInTouch")}</h3><p>{t("contactNote")}</p></div></div>
+          <div className="form-two-columns">
+            <div><label htmlFor="contact-name">{t("contactNameLabel")}</label><input id="contact-name" name="name" autoComplete="name" required maxLength={120} value={formData.name} onChange={handleChange} placeholder={t("contactNamePlaceholder")} aria-invalid={!!errors.name} aria-describedby={errors.name ? "name-error" : undefined} />{errors.name && <p id="name-error" className="form-error">{errors.name}</p>}</div>
+            <div><label htmlFor="contact-email">{t("contactEmailLabel")}</label><input id="contact-email" name="email" type="email" autoComplete="email" required maxLength={254} value={formData.email} onChange={handleChange} placeholder={t("contactEmailPlaceholder")} aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} />{errors.email && <p id="email-error" className="form-error">{errors.email}</p>}</div>
           </div>
-
-          <form
-            onSubmit={handleSubmit}
-            className="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur"
-          >
-            <div className="mb-5">
-              <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-slate-300">
-                {t("contactNameLabel")}
-              </label>
-              <input
-                type="text"
-                id="contact-name"
-                name="name"
-                required
-                maxLength={120}
-                value={formData.name}
-                onChange={handleChange}
-                placeholder={t("contactNamePlaceholder")}
-                className="w-full rounded-xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400"
-              />
-              {errors.name && (
-                <p className="mt-2 text-sm text-red-400">{errors.name}</p>
-              )}
-            </div>
-
-            <div className="mb-5">
-              <label htmlFor="contact-email" className="mb-2 block text-sm font-medium text-slate-300">
-                {t("contactEmailLabel")}
-              </label>
-              <input
-                type="email"
-                id="contact-email"
-                name="email"
-                required
-                maxLength={254}
-                value={formData.email}
-                onChange={handleChange}
-                placeholder={t("contactEmailPlaceholder")}
-                className="w-full rounded-xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400"
-              />
-              {errors.email && (
-                <p className="mt-2 text-sm text-red-400">{errors.email}</p>
-              )}
-            </div>
-
-            <div className="mb-5">
-              <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-slate-300">
-                {t("contactMessageLabel")}
-              </label>
-              <textarea
-                id="contact-message"
-                name="message"
-                required
-                maxLength={5000}
-                value={formData.message}
-                onChange={handleChange}
-                placeholder={t("contactMessagePlaceholder")}
-                rows={6}
-                className="w-full resize-none rounded-xl border border-white/10 bg-slate-900 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-400"
-              />
-              {errors.message && (
-                <p className="mt-2 text-sm text-red-400">{errors.message}</p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isSending}
-              className="w-full rounded-xl bg-cyan-400 px-6 py-3 font-semibold text-slate-950 transition hover:bg-cyan-300 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isSending ? t("contactSending") : t("contactSendMessage")}
-            </button>
-
-            {success && (
-              <p role="status" className="mt-4 text-center text-sm text-cyan-400">
-                {success}
-              </p>
-            )}
-          </form>
-        </div>
+          <div><label htmlFor="contact-message">{t("contactMessageLabel")}</label><textarea id="contact-message" name="message" required maxLength={5000} value={formData.message} onChange={handleChange} placeholder={t("contactMessagePlaceholder")} rows={4} aria-invalid={!!errors.message} aria-describedby={errors.message ? "message-error" : undefined} />{errors.message && <p id="message-error" className="form-error">{errors.message}</p>}</div>
+          <button type="submit" disabled={isSending} className="button-primary">{isSending ? t("contactSending") : t("contactSendMessage")}<ArrowUpRight size={17} /></button>
+          {success && <p role="status" className="form-status">{success}</p>}
+        </form>
       </div>
     </section>
   );
