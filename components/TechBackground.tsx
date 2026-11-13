@@ -14,6 +14,7 @@ export default function TechBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -123,7 +124,7 @@ export default function TechBackground() {
 
   return (
     <>
-      <div className="fixed inset-0 -z-20 bg-[linear-gradient(rgba(3,7,18,0.86),rgba(3,7,18,0.95)),url('/background.jpg'))] bg-cover bg-center bg-fixed" />
+      <div className="fixed inset-0 -z-20 bg-[linear-gradient(rgba(3,7,18,0.86),rgba(3,7,18,0.95)),url('/background.jpg')] bg-cover bg-center bg-fixed" />
 
       <canvas
         ref={canvasRef}

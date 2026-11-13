@@ -8,7 +8,6 @@ import {
   FaTelegram,
   FaLinkedin,
   FaEnvelope,
-  FaPhoneAlt,
   FaMapMarkerAlt,
 } from "react-icons/fa";
 
@@ -85,7 +84,13 @@ export default function Contact() {
     setSuccess("");
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+        signal: AbortSignal.timeout(15000),
+      });
+      if (!response.ok) throw new Error("Message could not be saved");
 
       setSuccess(t("contactSuccess"));
       setFormData({
@@ -147,17 +152,7 @@ export default function Contact() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-500/20 text-cyan-400">
-                  <FaPhoneAlt />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-400">
-                    {t("contactPhone")}
-                  </p>
-                  <p className="font-medium">+855 XX XXX XXX</p>
-                </div>
-              </div>
+
 
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-500/20 text-cyan-400">
@@ -179,7 +174,7 @@ export default function Contact() {
 
               <div className="flex gap-4">
                 <a
-                  href="https://github.com/Sorntola"
+                  aria-label="GitHub" href="https://github.com/Sorntola"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-xl text-white transition hover:bg-cyan-500 hover:text-slate-950"
@@ -188,7 +183,7 @@ export default function Contact() {
                 </a>
 
                 <a
-                  href="https://www.facebook.com/tola.noex"
+                  aria-label="Facebook" href="https://www.facebook.com/tola.noex"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-xl text-white transition hover:bg-cyan-500 hover:text-slate-950"
@@ -197,7 +192,7 @@ export default function Contact() {
                 </a>
 
                 <a
-                  href="https://t.me/sorntola"
+                  aria-label="Telegram" href="https://t.me/sorntola"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-xl text-white transition hover:bg-cyan-500 hover:text-slate-950"
@@ -206,7 +201,7 @@ export default function Contact() {
                 </a>
 
                 <a
-                  href="https://www.linkedin.com/in/sorntola/"
+                  aria-label="LinkedIn" href="https://www.linkedin.com/in/sorntola/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-xl text-white transition hover:bg-cyan-500 hover:text-slate-950"
@@ -222,12 +217,15 @@ export default function Contact() {
             className="rounded-2xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur"
           >
             <div className="mb-5">
-              <label className="mb-2 block text-sm font-medium text-slate-300">
+              <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-slate-300">
                 {t("contactNameLabel")}
               </label>
               <input
                 type="text"
+                id="contact-name"
                 name="name"
+                required
+                maxLength={120}
                 value={formData.name}
                 onChange={handleChange}
                 placeholder={t("contactNamePlaceholder")}
@@ -239,12 +237,15 @@ export default function Contact() {
             </div>
 
             <div className="mb-5">
-              <label className="mb-2 block text-sm font-medium text-slate-300">
+              <label htmlFor="contact-email" className="mb-2 block text-sm font-medium text-slate-300">
                 {t("contactEmailLabel")}
               </label>
               <input
                 type="email"
+                id="contact-email"
                 name="email"
+                required
+                maxLength={254}
                 value={formData.email}
                 onChange={handleChange}
                 placeholder={t("contactEmailPlaceholder")}
@@ -256,11 +257,14 @@ export default function Contact() {
             </div>
 
             <div className="mb-5">
-              <label className="mb-2 block text-sm font-medium text-slate-300">
+              <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-slate-300">
                 {t("contactMessageLabel")}
               </label>
               <textarea
+                id="contact-message"
                 name="message"
+                required
+                maxLength={5000}
                 value={formData.message}
                 onChange={handleChange}
                 placeholder={t("contactMessagePlaceholder")}
@@ -281,7 +285,7 @@ export default function Contact() {
             </button>
 
             {success && (
-              <p className="mt-4 text-center text-sm text-cyan-400">
+              <p role="status" className="mt-4 text-center text-sm text-cyan-400">
                 {success}
               </p>
             )}

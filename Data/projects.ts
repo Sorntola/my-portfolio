@@ -14,21 +14,21 @@ export const projects: Project[] = [
     description:
       "Student, Attendance, Payment, Score and Report Management System",
     tech: "C#, WinForms, SQL Server",
-    image: "/projects/bls.png",
+    image: "/BLS.png",
     category: "Desktop",
   },
   {
     title: "Digital Media Portfolio",
     description: "Photography, Video Editing and Design Portfolio",
     tech: "React, Next.js, Tailwind CSS",
-    image: "/projects/media.png",
+    image: "/gallery/design.jpg",
     category: "Design",
   },
   {
     title: "IT Support Dashboard",
     description: "Track support tickets and IT assets",
     tech: "Node.js, Express, MongoDB",
-    image: "/projects/support.png",
+    image: "/window.svg",
     category: "Web",
   },
 ];

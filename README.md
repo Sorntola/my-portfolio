@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+﻿# Tola Portfolio
 
-## Getting Started
+Bilingual Khmer/English portfolio using Next.js 16, React 19, Tailwind CSS 4, and a separate Express API.
 
-First, run the development server:
+## Local development
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Use Node.js 20.9 or later. Install both sets of dependencies:
+
+```sh
+npm ci
+npm --prefix server ci
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Copy `.env.example` to `.env.local` and `server/.env.example` to `server/.env`. Set `ADMIN_TOKEN` in `server/.env` to a long random secret. Run these in separate terminals:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+npm run dev:api
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open http://localhost:3000. On Windows, use `npm.cmd` if PowerShell blocks `npm.ps1`.
 
-## Learn More
+## Projects and contact
 
-To learn more about Next.js, take a look at the following resources:
+- `/admin` lists projects. Enter the configured admin token to add, edit, or delete. The token stays in component memory and is not saved in browser storage.
+- Add project images to `public/` and enter their root-relative path (for example `/BLS.png`).
+- The API writes projects to `server/data/projects.json` and contact submissions to `server/data/messages.jsonl`. Contact messages are saved locally; email delivery is not configured.
+- The public project section uses bundled data from `Data/projects.ts` when the API is unavailable.
+- Missing CV and video-gallery links have been removed. Add the actual assets before restoring those entries.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Checks
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```sh
+npm run lint
+npm run typecheck
+npm run test:api
+npm run build
+```
 
-## Deploy on Vercel
+The API integration test uses temporary storage and checks authorization, validation, CRUD, persistence, and contact submission. The build downloads Kantumruy Pro from Google Fonts and needs network access.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Run the Next.js application and the Express API. Set `API_URL` before building to the API's server-side address; browser requests use same-origin `/api` URLs through a Next.js rewrite. Use `npm run build` and `npm start` for the frontend, and `npm --prefix server start` for the API.
+
+Set `HOST=0.0.0.0` if the API needs to accept connections from another container. Configure HTTPS for the public site, `FRONTEND_ORIGIN` for any direct browser API access, and `DATA_DIR` to persistent storage. This file-backed API is intended for one server process; multiple replicas require a shared database. Back up the data directory. Project writes are disabled when `ADMIN_TOKEN` is unset.
+
+The repository currently tracks legacy `server/node_modules` files; ignore rules prevent new dependency directories from being added, but existing tracked files require a separate Git index cleanup.

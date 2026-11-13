@@ -3,18 +3,11 @@
 import { useEffect, useState } from "react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import ProjectCard from "./projectcard";
+import type { TranslationKey } from "@/Data/translations";
+import { projects as defaultProjects, type Category, type Project } from "@/Data/projects";
+import { fetchProjects } from "@/lib/projects";
 
-type Category = "All" | "Web" | "Desktop" | "Design" | "IT";
-
-type Project = {
-  title: string;
-  description: string;
-  tech: string;
-  image: string;
-  category: Category;
-};
-
-const categories: { value: Category; labelKey: string }[] = [
+const categories: { value: Category; labelKey: TranslationKey }[] = [
   { value: "All", labelKey: "categoryAll" },
   { value: "Web", labelKey: "categoryWeb" },
   { value: "Desktop", labelKey: "categoryDesktop" },
@@ -24,25 +17,25 @@ const categories: { value: Category; labelKey: string }[] = [
 
 export default function Projects() {
   const { t, language } = useLanguage();
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[]>(defaultProjects);
   const [activeCategory, setActiveCategory] = useState<Category>("All");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
     async function getProjects() {
       try {
-        const response = await fetch("http://localhost:5000/api/projects");
-        const data: Project[] = await response.json();
-
-        setProjects(data);
-      } catch (error) {
-        console.log("Failed to fetch projects:", error);
+        const data = await fetchProjects(AbortSignal.any([controller.signal, AbortSignal.timeout(15000)]));
+        if (!controller.signal.aborted) setProjects(data);
+      } catch {
+        // Keep the bundled portfolio available when the API is offline.
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
 
     getProjects();
+    return () => controller.abort();
   }, []);
 
   const filteredProjects =
@@ -76,7 +69,7 @@ export default function Projects() {
                   : "border border-white/20 text-slate-300 hover:border-cyan-400 hover:text-cyan-400"
               }`}
             >
-              {t(category.labelKey as any)}
+              {t(category.labelKey)}
             </button>
           ))}
         </div>
@@ -84,6 +77,8 @@ export default function Projects() {
 
       {loading ? (
         <p className="text-slate-400">{t("projectsLoading")}</p>
+      ) : filteredProjects.length === 0 ? (
+        <p role="status" className="text-slate-400">{t("projectsEmpty")}</p>
       ) : (
         <div className="grid gap-6 md:grid-cols-3">
           {filteredProjects.map((project) => (

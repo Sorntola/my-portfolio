@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="kh" suppressHydrationWarning>
+    <html lang="km">
       <body
         className={`${kantumruy.className} min-h-screen overflow-x-hidden bg-slate-950 text-white antialiased`}
       >

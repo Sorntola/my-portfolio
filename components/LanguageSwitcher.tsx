@@ -9,6 +9,7 @@ export default function LanguageSwitcher() {
     <div className="flex rounded-full border border-white/10 bg-white/5 p-1">
       <button
         type="button"
+        aria-pressed={language === "kh"}
         onClick={() => setLanguage("kh")}
         className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
           language === "kh"
@@ -21,6 +22,7 @@ export default function LanguageSwitcher() {
 
       <button
         type="button"
+        aria-pressed={language === "en"}
         onClick={() => setLanguage("en")}
         className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
           language === "en"

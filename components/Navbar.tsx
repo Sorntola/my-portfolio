@@ -77,6 +77,7 @@ export default function Navbar() {
           <div className="relative">
             <button
               type="button"
+              aria-expanded={isMoreOpen}
               onClick={() => setIsMoreOpen((prev) => !prev)}
               className={`rounded-full px-4 py-2 transition ${
                 isMoreActive()
@@ -112,6 +113,8 @@ export default function Navbar() {
 
         <button
           type="button"
+          aria-label={language === "kh" ? "ម៉ឺនុយ" : "Navigation menu"}
+          aria-expanded={isOpen}
           onClick={() => setIsOpen(!isOpen)}
           className="rounded-xl border border-white/10 px-3 py-2 text-xl text-white lg:hidden"
         >

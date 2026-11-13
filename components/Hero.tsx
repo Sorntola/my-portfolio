@@ -47,13 +47,7 @@ export default function Hero() {
             {t("heroContactMe")}
           </a>
 
-          <a
-            href="/cv/tola-cv.pdf"
-            download
-            className="rounded-full border border-cyan-400/40 bg-cyan-400/10 px-7 py-3 font-semibold text-cyan-300 transition hover:-translate-y-1 hover:bg-cyan-400 hover:text-slate-950"
-          >
-            {t("heroDownloadCV")}
-          </a>
+
         </div>
       </div>
 
@@ -71,7 +65,8 @@ export default function Hero() {
               src="/profile.png"
               alt="Tola"
               fill
-              priority
+              preload
+              sizes="(min-width: 768px) 390px, 290px"
               className="object-cover object-top"
             />
 
@@ -89,7 +84,7 @@ export default function Hero() {
               📍 {t("heroLocation")}
             </div>
 
-            <div className="absolute bottom-24 right-5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300 backdrop-blur">
+            <div className="absolute bottom-36 right-5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-300 backdrop-blur">
               ● {t("heroAvailable")}
             </div>
 

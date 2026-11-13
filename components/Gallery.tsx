@@ -15,10 +15,6 @@ export default function Gallery() {
       title: t("galleryPhoto"),
       image: "/gallery/photographer.JPG",
     },
-    {
-      title: t("galleryVideo"),
-      image: "/gallery/video.jpg",
-    },
   ];
 
   return (
@@ -37,7 +33,7 @@ export default function Gallery() {
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2">
         {gallery.map((item) => (
           <div
             key={item.title}
@@ -48,6 +44,7 @@ export default function Gallery() {
                 src={item.image}
                 alt={item.title}
                 fill
+                sizes="(min-width: 768px) 50vw, 100vw"
                 className="object-cover transition duration-500 group-hover:scale-110"
               />
             </div>

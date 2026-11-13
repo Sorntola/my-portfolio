@@ -19,12 +19,13 @@ type BinaryStream = {
   opacity: number;
 };
 
-const WORDS = ["AI", "DEV", "API", "NEXT", "SQL", "NODE", "JSON", "ROOT","Media","Graphic Design"ុ,"Photography","Videography"];
+const WORDS = ["AI", "DEV", "API", "NEXT", "SQL", "NODE", "JSON", "ROOT", "Media", "Graphic Design", "Photography", "Videography"];
 
 export default function BinaryBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -250,6 +251,7 @@ export default function BinaryBackground() {
       <div className="fixed inset-0 z-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.12),transparent_30%),radial-gradient(circle_at_80%_35%,rgba(37,99,235,0.12),transparent_34%),radial-gradient(circle_at_50%_90%,rgba(14,165,233,0.08),transparent_38%)] md:bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.18),transparent_28%),radial-gradient(circle_at_80%_35%,rgba(37,99,235,0.16),transparent_32%),radial-gradient(circle_at_50%_90%,rgba(14,165,233,0.12),transparent_36%)]" />
 
       <canvas
+        aria-hidden="true"
         ref={canvasRef}
         className="pointer-events-none fixed inset-0 z-0 h-full w-full opacity-55 md:opacity-90"
       />
